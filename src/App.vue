@@ -1,26 +1,37 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <Menu :openClosedForm="openClosedForm" :showForm="showForm"/>
+  <TweetForm :openClosedForm="openClosedForm" :showForm="showForm" :reloadTweets="reloadTweets"/>
+  <TweetList :tweets="tweets" :reloadTweets="reloadTweets"/>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import { ref } from "vue";
+import Menu from "./components/Menu";
+import TweetForm from "./components/TweetForm";
+import useFormTweet from "./hooks/useFormTweet";
+import TweetList from "./components/TweetList";
+import { getTweetApi } from "./api/tweet"
+ 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  components:{
+    Menu,
+    TweetForm,
+    TweetList,
+  },
+  setup (){
+    let tweets = ref(getTweetApi().reverse());
+    const reloadTweets = () =>{
+      tweets.value = getTweetApi().reverse();
+    }
+    return{
+      ...useFormTweet(),
+      tweets,
+      reloadTweets,
+    };
   }
 }
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
